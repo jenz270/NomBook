@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">NomBook</string>
+    <string name="title_home">Home</string>
+    <string name="title_favourites">Favourites</string>
+    <string name="action_favorite">Favourite</string>
+    <string name="action_search">Search</string>
+    <string name="action_back">Back</string>
+
+    <!-- Main Activity -->
+    <string name="search_hint">Search for recipes</string>
+
+    <!-- Home Screen -->
+    <string name="surprise_me">Surprise Me!</string>
+    <string name="home_title_text">Recommended Recipes</string>
+    <string name="recipe_picture_content_description">Recipe Picture</string>
+</resources>
