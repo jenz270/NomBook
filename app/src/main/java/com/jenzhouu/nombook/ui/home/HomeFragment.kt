@@ -40,12 +40,7 @@ class HomeFragment : Fragment() {
             topRecipesAdapter.setTopRecipesList(it)
             topRecipesAdapter.notifyDataSetChanged()
         })
-        setHasOptionsMenu(true)
-        return root
-    }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_favorite).setVisible(false)
-        super.onPrepareOptionsMenu(menu)
+        return root
     }
 }
