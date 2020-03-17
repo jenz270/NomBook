@@ -1,4 +1,4 @@
-package com.jenzhouu.nombook.ui.notifications
+package com.jenzhouu.nombook.ui.favourites
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">NomBook</string>
     <string name="title_home">Home</string>
+    <string name="title_search">Search</string>
     <string name="title_favourites">Favourites</string>
     <string name="action_favorite">Favourite</string>
     <string name="action_search">Search</string>
@@ -13,4 +14,7 @@
     <string name="surprise_me">Surprise Me!</string>
     <string name="home_title_text">Recommended Recipes</string>
     <string name="recipe_picture_content_description">Recipe Picture</string>
+
+    <!-- Search Screen -->
+    <string name="search_title_text">Search Results</string>
 </resources>
