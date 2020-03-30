@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_search"
             app:destination="@id/navigation_search" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_recipe_details"
+            app:destination="@id/navigation_recipe_details" />
     </fragment>
 
     <fragment
@@ -26,4 +29,10 @@
         android:name="com.jenzhouu.nombook.ui.favourites.FavouritesFragment"
         android:label="@string/title_favourites"
         tools:layout="@layout/fragment_favourites" />
+
+    <fragment
+        android:id="@+id/navigation_recipe_details"
+        android:name="com.jenzhouu.nombook.ui.recipedetails.RecipeDetailsFragment"
+        android:label="fragment_navigation_recipe_details"
+        tools:layout="@layout/fragment_recipe_details" />
 </navigation>

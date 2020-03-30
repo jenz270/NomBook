@@ -14,13 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jenzhouu.nombook.R
 import com.jenzhouu.nombook.ui.TopSpacingItemDecoration
-import android.content.Intent
-import android.net.Uri
+import android.util.Log
+import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.navigation.Navigation
+import com.jenzhouu.nombook.api.Result
+import com.jenzhouu.nombook.api.Service
 
+const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
-
-    private lateinit var homeViewModel: HomeViewModel
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory(Service())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,23 +34,37 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         val randomizeButton = view.findViewById<Button>(R.id.randomize_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.top_ten_recipes_rv)
         val topRecipesAdapter = TopRecipesAdapter()
         val searchView = view.findViewById<SearchView>(R.id.search_view)
 
-        randomizeButton.setOnClickListener {
-            val uri = Uri.parse("http://www.africau.edu/images/default/sample.pdf") // missing 'http://' will cause crashed
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            context?.startActivity(intent)
+        recyclerView?.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = topRecipesAdapter
+            val spacingDecoration =
+                TopSpacingItemDecoration(resources.getInteger(R.integer.list_item_padding))
+            addItemDecoration(spacingDecoration)
+
         }
+        viewModel.retrieveRandomRecipe()
+
+        randomizeButton.setOnClickListener {
+            getRandomRecipeResult(view)
+        }
+//        homeViewModel.getRecipes().observe(this, Observer {
+//            topRecipesAdapter.setTopRecipesList(it)
+//            topRecipesAdapter.notifyDataSetChanged()
+//        })
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-//                homeViewModel.loadSearchMovies(query)
-//                addSearchDataSet()
+                if (query != null) {
+                    viewModel.retrieveSearchResults(query)
+                    getSearchResults()
+                }
+                // TODO: pass in the data in the navigation route, remember to check for null data and return text on ui when null
                 findNavController().navigate(R.id.action_navigation_home_to_navigation_search)
                 return true
             }
@@ -55,19 +75,36 @@ class HomeFragment : Fragment() {
             }
         })
 
-        recyclerView?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = topRecipesAdapter
-            val spacingDecoration = TopSpacingItemDecoration(resources.getInteger(R.integer.list_item_padding))
-            addItemDecoration(spacingDecoration)
-
-        }
-        homeViewModel.retrieveRecipes()
-        homeViewModel.getRecipes().observe(this, Observer {
-            topRecipesAdapter.setTopRecipesList(it)
-            topRecipesAdapter.notifyDataSetChanged()
-        })
-
         return view
+    }
+
+    private fun getSearchResults() {
+        viewModel.getSearchResults().observe(this, Observer {
+
+        })
+    }
+
+    private fun getRandomRecipeResult(view: View) {
+        viewModel.getRandomRecipe().observe(this, Observer { result ->
+            when (result) {
+                is Result.InProgress -> {
+                    // TODO: Add in spinner for in progress
+                    //spinner.visibility = VISIBLE
+                    Log.d(TAG, "random recipe is loading...")
+                }
+
+                is Result.Success -> {
+                    val bundle = bundleOf("randomMeal" to result.data)
+                    Navigation.findNavController(view)
+                        .navigate(R.id.action_navigation_home_to_navigation_recipe_details, bundle)
+                }
+
+                is Result.Failure -> {
+                    // TODO: Lead to error fragment
+                    Log.e(TAG, "random recipe ran into an error.")
+                }
+            }
+
+        })
     }
 }

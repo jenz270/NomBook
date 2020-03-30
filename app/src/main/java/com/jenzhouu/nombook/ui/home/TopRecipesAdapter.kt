@@ -9,14 +9,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jenzhouu.nombook.R
-import com.jenzhouu.nombook.model.Recipe
+import com.jenzhouu.nombook.model.Meal
+import com.jenzhouu.nombook.model.Meals
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.top_recipies_list_item.view.*
 import java.util.*
 import kotlin.collections.ArrayList
 
 class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewHolder>(), Filterable {
-    private var topRecipesList: List<Recipe> = ArrayList()
+    private var topRecipesList: List<Meal> = ArrayList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopRecipesViewHolder {
         return TopRecipesViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.top_recipies_list_item, parent,false)
@@ -37,7 +38,7 @@ class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewH
         return topRecipesList.size
     }
 
-    fun setTopRecipesList(recipesList: List<Recipe>) {
+    fun setTopRecipesList(recipesList: List<Meal>) {
         topRecipesList = recipesList
     }
 
@@ -49,7 +50,7 @@ class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewH
 
         // runs on background thread
         override fun performFiltering(constraint: CharSequence): FilterResults? {
-            val filteredList: MutableList<Recipe> = mutableListOf()
+            val filteredList: MutableList<Meal> = mutableListOf()
 
             if (constraint.toString().isEmpty()) {
                 filteredList.addAll(topRecipesList)
@@ -73,7 +74,7 @@ class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewH
         }
 
         override fun publishResults(constraint: CharSequence, results: FilterResults) {
-//            topRecipesList.addAll(results.values as Collection<Recipe>)
+//            topRecipesList.addAll(results.values as Collection<Meals>)
 //            notifyDataSetChanged()
         }
     }

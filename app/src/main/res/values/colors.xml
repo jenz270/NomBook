@@ -7,6 +7,7 @@
     <color name="purple">#FF5F4B8B</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#D2D1D1</color>
+    <color name="dark_grey">#585757</color>
     <color name="light_pink">#FFF8F2F2</color>
     <color name="light_grey">#D4D4D4</color>
 </resources>
