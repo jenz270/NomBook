@@ -54,12 +54,12 @@ class HomeViewModel (private val service: Service,  private val context: Corouti
 
     fun retrieveRecipes() {
         // TODO: Implement the logic to get the data
-       // _topRecipesList.value = SampleData.recipes
+       // _topRecipesList.value = SampleData.mealsList
     }
 
     fun retrieveSearchResults(searchQuery: String) {
         // TODO: Implement the logic to get the data
-       // _searchResults.value = SampleData.recipes
+       // _searchResults.value = SampleData.mealsList
     }
 
 }

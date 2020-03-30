@@ -29,5 +29,6 @@ data class Meal (
 
 @Parcelize
 data class Meals(
-    val meals: List<Meal>
+    @SerializedName("meals")
+    val mealsList: List<Meal>
 ) : Parcelable

@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.jenzhouu.nombook.R
 import com.jenzhouu.nombook.model.Meal
-import com.jenzhouu.nombook.model.Meals
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.top_recipies_list_item.view.*
 import java.util.*

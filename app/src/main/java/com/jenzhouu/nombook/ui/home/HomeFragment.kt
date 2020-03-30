@@ -53,7 +53,7 @@ class HomeFragment : Fragment() {
         randomizeButton.setOnClickListener {
             getRandomRecipeResult(view)
         }
-//        homeViewModel.getRecipes().observe(this, Observer {
+//        homeViewModel.getMealsList().observe(this, Observer {
 //            topRecipesAdapter.setTopRecipesList(it)
 //            topRecipesAdapter.notifyDataSetChanged()
 //        })

@@ -2,7 +2,7 @@ package com.jenzhouu.nombook.model
 
 //class SampleData {
 //    companion object {
-//        val recipes = listOf(
+//        val mealsList = listOf(
 //            Meals(
 //                name = "Chocolate Brownies testing the length of the text and how textview handles this",
 //                image = "https://www.seriouseats.com/2018/03/20180413-brownie-mix-vicky-wasik-20.jpg",

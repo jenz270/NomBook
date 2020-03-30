@@ -52,7 +52,7 @@ class SearchFragment : Fragment() {
         }
 
 //        searchViewModel.retrieveRecipes()
-//        searchViewModel.getRecipes().observe(this, Observer {
+//        searchViewModel.getMealsList().observe(this, Observer {
 //            topRecipesAdapter.setTopRecipesList(it)
 //            topRecipesAdapter.notifyDataSetChanged()
 //        })
