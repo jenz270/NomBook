@@ -27,12 +27,23 @@ class MealDeserializer : JsonDeserializer<Meal> {
     private fun parseIngredients(json: JsonElement): List<Ingredient> {
         val jsonObject = json.asJsonObject
         return (1..20).map {
-            Ingredient(
-                name = jsonObject.getAsJsonPrimitive("strIngredient$it").asString,
-                measure = jsonObject.getAsJsonPrimitive("strMeasure$it").asString
-            )
+            check(!jsonObject.isJsonNull) { "JSON response from themealdb API was null!" }
+
+            val ingredient = jsonObject.get("strIngredient$it")
+            val measure = jsonObject.get("strMeasure$it")
+            if (!ingredient.isJsonNull && !measure.isJsonNull) {
+                Ingredient(
+                    name = ingredient.asString,
+                    measure = measure.asString
+                )
+            } else {
+                Ingredient(
+                    name = "",
+                    measure = ""
+                )
+            }
         }.filter {
-            it.measure.isNotEmpty() || it.name.isNotEmpty()
+            it.measure.isBlank() || it.name.isBlank()
         }
     }
 }

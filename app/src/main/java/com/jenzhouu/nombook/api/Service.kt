@@ -42,20 +42,19 @@ class Service {
         }
     }
 
-
-//    fun topRecipes(callback: (result: Result<List<Meals>>) -> Unit) {
-//        try {
-//            val response: Response<List<Meals>> = api.topRecipes().execute()
-//            if(response.isSuccessful) {
-//                callback.invoke(Result.Success(response.body()))
-//            } else {
-//                callback.invoke(Result.Error(response.message()))
-//            }
-//        } catch (e: IOException) {
-//            Log.e(TAG, "Meals Retrieval Failed", e)
-//            callback.invoke(Result.Error(e.message ?: ""))
-//        }
-//    }
+    fun retrieveTopRecipes(callback: (result: Result<Meals>) -> Unit) {
+        try {
+            val response: Response<Meals> = api.topRecipes().execute()
+            if(response.isSuccessful) {
+                callback.invoke(Result.Success(response.body()))
+            } else {
+                callback.invoke(Result.Failure(response.message()))
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Meals Retrieval Failed", e)
+            callback.invoke(Result.Failure(e.message ?: ""))
+        }
+    }
 
 //    fun searchRecipes(recipe: String, callback: (result: Result<List<Meals>>) -> Unit) {
 //
@@ -75,7 +74,10 @@ class Service {
 
 fun main() {
     val service = Service()
-    service.retrieveRandomRecipe {
-        println(it)
-    }
+//    service.retrieveRandomRecipe {
+//        println(it)
+//    }
+//    service.topRecipes {
+//        println(it)
+//    }
 }

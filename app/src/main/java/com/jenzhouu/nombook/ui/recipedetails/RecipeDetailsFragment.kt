@@ -1,5 +1,6 @@
 package com.jenzhouu.nombook.ui.recipedetails
 
+import android.media.Image
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.Navigation
 import com.jenzhouu.nombook.R
+import com.jenzhouu.nombook.model.Meal
 import com.jenzhouu.nombook.model.Meals
 import com.squareup.picasso.Picasso
 
@@ -22,17 +25,20 @@ class RecipeDetailsFragment : Fragment() {
         val recipeImage = view.findViewById<ImageView>(R.id.recipe_image)
         val ingredientsList = view.findViewById<TextView>(R.id.ingredients_list)
         val instructionsList = view.findViewById<TextView>(R.id.instructions_list)
+        val backButton = view.findViewById<ImageView>(R.id.back_button)
+        val favoriteButton = view.findViewById<ImageView>(R.id.favorite_button)
+
         val bundle = arguments
-        var meal: Meals? = null
+        var recipe: Meal? = null
 
         if (bundle != null) {
-            meal = bundle.getParcelable("randomMeal")
+            recipe = bundle.getParcelable("randomMeal")
         }
 
-        if (meal != null) {
-            // get the first and only item
-            val recipe = meal.mealsList[0]
+        backButton.setOnClickListener {
+        }
 
+        if (recipe != null) {
             recipeName.text = recipe.name
 
             Picasso.get()

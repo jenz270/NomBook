@@ -53,10 +53,9 @@ class HomeFragment : Fragment() {
         randomizeButton.setOnClickListener {
             getRandomRecipeResult(view)
         }
-//        homeViewModel.getMealsList().observe(this, Observer {
-//            topRecipesAdapter.setTopRecipesList(it)
-//            topRecipesAdapter.notifyDataSetChanged()
-//        })
+
+        viewModel.retrieveTopRecipes()
+        getTopRecipes(topRecipesAdapter)
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -78,12 +77,55 @@ class HomeFragment : Fragment() {
         return view
     }
 
+    /**
+     * getSearchResults observes the search results recieved from the API
+     */
     private fun getSearchResults() {
-        viewModel.getSearchResults().observe(this, Observer {
-
+        viewModel.getSearchResults().observe(this, Observer { result ->
+            when (result) {
+                is Result.InProgress -> {
+                    Log.d(TAG, "search results are loading...")
+                }
+                is Result.Success -> {
+                    Log.d(TAG, "Successfully retrieved search results.")
+                }
+                is Result.Failure -> {
+                    Log.d(TAG, "Results failed to be retrieved.")
+                }
+            }
         })
     }
 
+    /**
+     * getTopRecipes observes the top recipes data from the API, then sets the recycler view with the results
+     *
+     * @param adapter is used to set the result into the TopRecipesAdapter
+     */
+    private fun getTopRecipes(adapter: TopRecipesAdapter) {
+        viewModel.getRecipes().observe(this, Observer { result ->
+            when (result) {
+                is Result.InProgress -> {
+                    Log.d(TAG, "search results are loading...")
+                }
+                is Result.Success -> {
+                    if (result.data != null) {
+                        adapter.setTopRecipesList(result.data.mealsList)
+                        adapter.notifyDataSetChanged()
+                    }
+                    Log.d(TAG, "Successfully retrieved top recipes.")
+                }
+                is Result.Failure -> {
+                    Log.d(TAG, "Results failed to be retrieved.")
+                }
+            }
+        })
+    }
+
+    /**
+     * getRandomRecipeResult will send a random recipe to the recipe details page
+     *
+     * @param view View required to perform the fragment navigation
+     */
     private fun getRandomRecipeResult(view: View) {
         viewModel.getRandomRecipe().observe(this, Observer { result ->
             when (result) {
@@ -92,13 +134,16 @@ class HomeFragment : Fragment() {
                     //spinner.visibility = VISIBLE
                     Log.d(TAG, "random recipe is loading...")
                 }
-
                 is Result.Success -> {
-                    val bundle = bundleOf("randomMeal" to result.data)
-                    Navigation.findNavController(view)
-                        .navigate(R.id.action_navigation_home_to_navigation_recipe_details, bundle)
+                    if (result.data != null) {
+                        val bundle = bundleOf("randomMeal" to result.data.mealsList[0])
+                        Navigation.findNavController(view)
+                            .navigate(
+                                R.id.action_navigation_home_to_navigation_recipe_details,
+                                bundle
+                            )
+                    }
                 }
-
                 is Result.Failure -> {
                     // TODO: Lead to error fragment
                     Log.e(TAG, "random recipe ran into an error.")

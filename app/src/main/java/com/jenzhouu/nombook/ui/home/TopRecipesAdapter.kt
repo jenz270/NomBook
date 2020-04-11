@@ -17,6 +17,7 @@ import kotlin.collections.ArrayList
 
 class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewHolder>(), Filterable {
     private var topRecipesList: List<Meal> = ArrayList()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopRecipesViewHolder {
         return TopRecipesViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.top_recipies_list_item, parent,false)

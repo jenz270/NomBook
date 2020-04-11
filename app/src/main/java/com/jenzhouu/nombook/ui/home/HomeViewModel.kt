@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
+import com.jenzhouu.nombook.model.Meal
 import com.jenzhouu.nombook.model.Meals
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,25 +18,24 @@ class HomeViewModel (private val service: Service,  private val context: Corouti
 
     private val _randomRecipe = MutableLiveData<Result<Meals>>()
     private val randomRecipe: LiveData<Result<Meals>> = _randomRecipe
-    private val _topRecipesList = MutableLiveData<Result<List<Meals>>>()
-    private val topRecipesList: LiveData<Result<List<Meals>>> = _topRecipesList
-    private val _searchResults = MutableLiveData<Result<List<Meals>>>()
-    private val searchResults: LiveData<Result<List<Meals>>> = _searchResults
+    private val _topRecipesList = MutableLiveData<Result<Meals>>()
+    private val topRecipesList: LiveData<Result<Meals>> = _topRecipesList
+    private val _searchResults = MutableLiveData<Result<List<Meal>>>()
+    private val searchResults: LiveData<Result<List<Meal>>> = _searchResults
 
     fun getRandomRecipe(): LiveData<Result<Meals>> {
         return randomRecipe
     }
 
-    fun getRecipes(): LiveData<Result<List<Meals>>> {
+    fun getRecipes(): LiveData<Result<Meals>> {
         return topRecipesList
     }
 
-    fun getSearchResults(): LiveData<Result<List<Meals>>> {
+    fun getSearchResults(): LiveData<Result<List<Meal>>> {
         return searchResults
     }
 
     fun retrieveRandomRecipe() {
-        // TODO: Implement the logic to get the data
         launch {
             _randomRecipe.postValue(Result.InProgress)
             service.retrieveRandomRecipe {result ->
@@ -52,9 +52,21 @@ class HomeViewModel (private val service: Service,  private val context: Corouti
         }
     }
 
-    fun retrieveRecipes() {
-        // TODO: Implement the logic to get the data
-       // _topRecipesList.value = SampleData.mealsList
+    fun retrieveTopRecipes() {
+        launch {
+            _topRecipesList.postValue(Result.InProgress)
+            service.retrieveTopRecipes {result ->
+                when (result) {
+                    is Result.Success -> {
+                        _topRecipesList.postValue(result)
+                    }
+                    is Result.Failure -> {
+                        _topRecipesList.postValue(result)
+                    }
+                }
+
+            }
+        }
     }
 
     fun retrieveSearchResults(searchQuery: String) {
