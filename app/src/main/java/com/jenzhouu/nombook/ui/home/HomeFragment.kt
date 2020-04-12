@@ -136,7 +136,7 @@ class HomeFragment : Fragment() {
                 }
                 is Result.Success -> {
                     if (result.data != null) {
-                        val bundle = bundleOf("randomMeal" to result.data.mealsList[0])
+                        val bundle = bundleOf("recipe" to result.data.mealsList[0])
                         Navigation.findNavController(view)
                             .navigate(
                                 R.id.action_navigation_home_to_navigation_recipe_details,

@@ -43,7 +43,7 @@ class MealDeserializer : JsonDeserializer<Meal> {
                 )
             }
         }.filter {
-            it.measure.isBlank() || it.name.isBlank()
+            !it.measure.isBlank() || !it.name.isBlank()
         }
     }
 }

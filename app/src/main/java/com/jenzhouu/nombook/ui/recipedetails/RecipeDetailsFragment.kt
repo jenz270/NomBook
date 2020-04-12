@@ -32,7 +32,7 @@ class RecipeDetailsFragment : Fragment() {
         var recipe: Meal? = null
 
         if (bundle != null) {
-            recipe = bundle.getParcelable("randomMeal")
+            recipe = bundle.getParcelable("recipe")
         }
 
         backButton.setOnClickListener {

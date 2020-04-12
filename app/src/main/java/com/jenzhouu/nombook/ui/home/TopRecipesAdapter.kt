@@ -7,6 +7,9 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.os.bundleOf
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.jenzhouu.nombook.R
 import com.jenzhouu.nombook.model.Meal
@@ -32,6 +35,12 @@ class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewH
             .placeholder(R.drawable.ic_launcher_background)
             .error(R.drawable.ic_launcher_background)
             .into(holder.recipeImage)
+
+        holder.cardView.setOnClickListener{
+            val bundle = bundleOf("recipe" to topRecipesList[position])
+            Navigation.findNavController(it)
+                .navigate(R.id.action_navigation_home_to_navigation_recipe_details, bundle)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -81,6 +90,7 @@ class TopRecipesAdapter : RecyclerView.Adapter<TopRecipesAdapter.TopRecipesViewH
 
 
     class TopRecipesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cardView: CardView = itemView.top_recipes_list_item
         val recipeTitle: TextView = itemView.top_recipes_title
         val recipeImage: ImageView = itemView.top_recipes_image
     }
