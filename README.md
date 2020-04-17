@@ -1,3 +1,5 @@
+![Build Status](https://github.com/jenz270/NomBook/workflows/Android%20App%20Test/badge.svg)
+
 # NomBook
 
 An app to help you find a recipe with the ingredients you have in your fridge!
