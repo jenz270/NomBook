@@ -34,7 +34,6 @@ class HomeFragment : Fragment() {
         val binding = DataBindingUtil.inflate<FragmentHomeBinding>(
             inflater, R.layout.fragment_home, container, false
         )
-
         val topRecipesAdapter = TopRecipesAdapter()
 
         binding.recyclerView.apply {
