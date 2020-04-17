@@ -17,6 +17,4 @@ jobs:
       with:
         java-version: 1.8
     - name: Unit tests
-      env:
-        API_KEY: 0
-      run: bash ./gradlew test --stacktrace
+      run: bash ./gradlew test -PAPI_KEY=0 --stacktrace 
