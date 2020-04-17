@@ -1,11 +1,18 @@
 package com.jenzhouu.nombook.model
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
-data class Meal (
+@Entity(tableName = "meal_table")
+data class Meal(
+    @PrimaryKey
+    @ColumnInfo(name = "mealId")
     @SerializedName("idMeal")
     val recipeId: String,
 
@@ -21,14 +28,19 @@ data class Meal (
     @SerializedName("strMealThumb")
     val image: String,
 
-    val ingredients: List<Ingredient>,
+    val ingredients: List<Ingredient> = listOf(),
 
-    @SerializedName("strSource")
-    val sourceUrl: String
+    val topRecipe: Boolean = false,
+
+    var favoriteMeal: Boolean = false,
+
+    @ColumnInfo(name = "last_fetched")
+    var created: Date = Date()
+
 ) : Parcelable
 
 @Parcelize
-data class Meals (
+data class Meals(
     @SerializedName("meals")
     val mealsList: List<Meal>
 ) : Parcelable

@@ -1,31 +1,29 @@
 package com.jenzhouu.nombook.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.widget.SearchView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.jenzhouu.nombook.R
-import com.jenzhouu.nombook.ui.TopSpacingItemDecoration
-import android.util.Log
 import androidx.core.os.bundleOf
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.jenzhouu.nombook.R
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
+import com.jenzhouu.nombook.databinding.FragmentHomeBinding
+import com.jenzhouu.nombook.ui.TopSpacingItemDecoration
 
 const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels {
-        HomeViewModelFactory(Service())
+        val activity = requireNotNull(this.activity)
+        HomeViewModelFactory(activity.application, Service())
     }
 
     override fun onCreateView(
@@ -33,14 +31,13 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val view = inflater.inflate(R.layout.fragment_home, container, false)
-        val randomizeButton = view.findViewById<Button>(R.id.randomize_button)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.top_ten_recipes_rv)
-        val topRecipesAdapter = TopRecipesAdapter()
-        val searchView = view.findViewById<SearchView>(R.id.search_view)
+        val binding = DataBindingUtil.inflate<FragmentHomeBinding>(
+            inflater, R.layout.fragment_home, container, false
+        )
 
-        recyclerView?.apply {
+        val topRecipesAdapter = TopRecipesAdapter()
+
+        binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = topRecipesAdapter
             val spacingDecoration =
@@ -50,31 +47,31 @@ class HomeFragment : Fragment() {
         }
         viewModel.retrieveRandomRecipe()
 
-        randomizeButton.setOnClickListener {
-            getRandomRecipeResult(view)
+        binding.randomizeButton.setOnClickListener {
+            getRandomRecipeResult(it)
         }
 
         viewModel.retrieveTopRecipes()
-        getTopRecipes(topRecipesAdapter)
+        getTopRecipes(topRecipesAdapter, binding)
 
-        searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    viewModel.retrieveSearchResults(query)
-                    getSearchResults()
-                }
-                // TODO: pass in the data in the navigation route, remember to check for null data and return text on ui when null
-                findNavController().navigate(R.id.action_navigation_home_to_navigation_search)
-                return true
-            }
+//        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                if (query != null) {
+//                    viewModel.retrieveSearchResults(query)
+//                    getSearchResults()
+//                }
+//                // TODO: pass in the data in the navigation route, remember to check for null data and return text on ui when null
+//                findNavController().navigate(R.id.action_navigation_home_to_navigation_search)
+//                return true
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+////                topRecipesAdapter.filter.filter(newText)
+//                return false
+//            }
+//        })
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-//                topRecipesAdapter.filter.filter(newText)
-                return false
-            }
-        })
-
-        return view
+        return binding.root
     }
 
     /**
@@ -101,13 +98,14 @@ class HomeFragment : Fragment() {
      *
      * @param adapter is used to set the result into the TopRecipesAdapter
      */
-    private fun getTopRecipes(adapter: TopRecipesAdapter) {
-        viewModel.getRecipes().observe(this, Observer { result ->
+    private fun getTopRecipes(adapter: TopRecipesAdapter, binding: FragmentHomeBinding) {
+        viewModel.topRecipes.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.InProgress -> {
-                    Log.d(TAG, "search results are loading...")
+                    binding.progressBar.visibility = View.VISIBLE
                 }
                 is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
                     if (result.data != null) {
                         adapter.setTopRecipesList(result.data.mealsList)
                         adapter.notifyDataSetChanged()
@@ -115,6 +113,7 @@ class HomeFragment : Fragment() {
                     Log.d(TAG, "Successfully retrieved top recipes.")
                 }
                 is Result.Failure -> {
+                    binding.progressBar.visibility = View.GONE
                     Log.d(TAG, "Results failed to be retrieved.")
                 }
             }
@@ -127,7 +126,7 @@ class HomeFragment : Fragment() {
      * @param view View required to perform the fragment navigation
      */
     private fun getRandomRecipeResult(view: View) {
-        viewModel.getRandomRecipe().observe(this, Observer { result ->
+        viewModel.getRandomRecipe().observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.InProgress -> {
                     // TODO: Add in spinner for in progress

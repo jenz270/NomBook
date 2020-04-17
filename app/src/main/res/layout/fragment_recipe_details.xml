@@ -1,132 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.core.widget.NestedScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:orientation="vertical">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/recipe_scroll_view_margin_bottom"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <ImageView
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="25dp"
-                android:clickable="true"
-                android:contentDescription="@string/action_back"
-                android:focusable="true"
-                android:src="@drawable/ic_back"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/favorite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginEnd="20dp"
-                android:clickable="true"
-                android:contentDescription="@string/action_back"
-                android:focusable="true"
-                android:src="@drawable/ic_favorite_border_black"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/recipe_name_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="25dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/cairo_bold"
-                android:textColor="@color/coral"
-                android:textSize="@dimen/home_title_text_size"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="@id/back_button"
-                tools:text="Chocolate Mousse" />
-
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/square_border_coral"
-                android:orientation="vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recipe_name_text">
+                android:paddingBottom="@dimen/recipe_constraint_layout_padding_bottom">
 
                 <ImageView
-                    android:id="@+id/recipe_image"
+                    android:id="@+id/back_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/recipe_back_button_margin_start"
+                    android:layout_marginTop="@dimen/recipe_back_button_margin_top"
+                    android:layout_marginBottom="@dimen/recipe_back_button_margin_bottom"
+                    android:clickable="true"
+                    android:contentDescription="@string/action_back"
+                    android:focusable="true"
+                    android:src="@drawable/ic_back"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/favorite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/recipe_favorite_button_margin_start"
+                    android:layout_marginTop="@dimen/recipe_favorite_button_margin_top"
+                    android:layout_marginEnd="@dimen/recipe_favorite_button_margin_end"
+                    android:layout_marginBottom="@dimen/recipe_favorite_button_margin_bottom"
+                    android:clickable="true"
+                    android:contentDescription="@string/action_back"
+                    android:focusable="true"
+                    android:src="@drawable/ic_favorite_border_black"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/recipe_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/recipe_name_text_margin_start"
+                    android:layout_marginTop="@dimen/recipe_name_text_margin_top"
+                    android:layout_marginBottom="@dimen/recipe_name_text_margin_bottom"
+                    android:fontFamily="@font/cairo_bold"
+                    android:textColor="@color/coral"
+                    android:textSize="@dimen/home_title_text_size"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/back_button"
+                    tools:text="Chocolate Mousse" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/recipe_linear_layout_margin_start"
+                    android:layout_marginTop="@dimen/recipe_linear_layout_margin_top"
+                    android:layout_marginEnd="@dimen/recipe_linear_layout_margin_end"
+                    android:background="@drawable/square_border_coral"
+                    android:orientation="vertical"
+                    android:paddingStart="@dimen/recipe_linear_layout_padding_start"
+                    android:paddingEnd="@dimen/recipe_linear_layout_padding_end"
+                    android:paddingBottom="@dimen/recipe_linear_layout_padding_bottom"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recipe_name_text" />
+                    app:layout_constraintTop_toBottomOf="@id/recipe_name_text">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/cairo_bold"
-                    android:gravity="start"
-                    android:text="Ingredients"
-                    android:textColor="@color/coral"
-                    android:textSize="18sp" />
+                    <ImageView
+                        android:id="@+id/recipe_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/recipe_image_margin_top"
+                        android:layout_marginBottom="@dimen/recipe_image_margin_bottom"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/recipe_name_text"
+                        android:contentDescription="@string/recipe_picture_content_description" />
 
-                <TextView
-                    android:id="@+id/ingredients_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/cairo_regular"
-                    android:gravity="start"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="15sp"
-                    tools:text="3 tbs unsalted butter\n6 ounces chocolate\n3 large eggs\n1/2 teaspoon cream of tartar\n1/4 cup sugar\n1/2 cup heavy cream\n1/2 teaspoon vanilla extract" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cairo_bold"
+                        android:gravity="start"
+                        android:text="@string/ingredients"
+                        android:textColor="@color/coral"
+                        android:textSize="@dimen/recipe_ingredients_text_size" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/cairo_bold"
-                    android:gravity="start"
-                    android:text="Instructions"
-                    android:textColor="@color/coral"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/ingredients_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/recipe_ingredients_list_margin_bottom"
+                        android:fontFamily="@font/cairo_regular"
+                        android:gravity="start"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="@dimen/recipe_ingredients_list_text_size"
+                        tools:text="3 tbs unsalted butter\n6 ounces chocolate\n3 large eggs\n1/2 teaspoon cream of tartar\n1/4 cup sugar\n1/2 cup heavy cream\n1/2 teaspoon vanilla extract" />
 
-                <TextView
-                    android:id="@+id/instructions_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/cairo_regular"
-                    android:gravity="start"
-                    android:textColor="@color/dark_grey"
-                    android:textSize="15sp"
-                    tools:text="1. Place the butter in a medium microwave-safe bowl. \n2. Break the chocolate into small pieces directly into the bowl.\n3. Microwave it in 20-second intervals, stirring between each bout of heat, until the chocolate is about 75% melted. \n4. Stir, allowing the residual heat in the bowl to melt the chocolate completely." />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/cairo_bold"
+                        android:gravity="start"
+                        android:text="@string/instructions"
+                        android:textColor="@color/coral"
+                        android:textSize="@dimen/recipe_instructions_text_size" />
 
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</LinearLayout>
+                    <TextView
+                        android:id="@+id/instructions_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/recipe_instructions_list_margin_bottom"
+                        android:fontFamily="@font/cairo_regular"
+                        android:gravity="start"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="@dimen/recipe_instructions_list_text_size"
+                        tools:text="1. Place the butter in a medium microwave-safe bowl. \n2. Break the chocolate into small pieces directly into the bowl.\n3. Microwave it in 20-second intervals, stirring between each bout of heat, until the chocolate is about 75% melted. \n4. Stir, allowing the residual heat in the bowl to melt the chocolate completely." />
+                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+</layout>

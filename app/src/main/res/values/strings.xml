@@ -18,6 +18,12 @@
     <!-- Search Screen -->
     <string name="search_title_text">Search Results</string>
 
+    <!-- Favorites Screen -->
+    <string name="favorites_text">My Favorites</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="instructions">Instructions</string>
+    <string name="favorite_image">Favorite</string>
 </resources>

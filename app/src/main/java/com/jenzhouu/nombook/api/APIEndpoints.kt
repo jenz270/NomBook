@@ -8,7 +8,6 @@ import retrofit2.http.GET
 
 interface APIEndpoints {
     companion object {
-        // TODO: Hide API Key
         private const val API_KEY = BuildConfig.API_KEY
         const val BASE_URL = "https://www.themealdb.com/api/json/v2/$API_KEY/"
     }

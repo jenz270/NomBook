@@ -1,10 +1,13 @@
 package com.jenzhouu.nombook.ui.home
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
+import com.jenzhouu.nombook.data.DefaultMealsRepository
+import com.jenzhouu.nombook.data.MealRoomDatabase
 import com.jenzhouu.nombook.model.Meal
 import com.jenzhouu.nombook.model.Meals
 import kotlinx.coroutines.CoroutineScope
@@ -12,23 +15,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class HomeViewModel (private val service: Service,  private val context: CoroutineContext = Dispatchers.IO) : ViewModel(), CoroutineScope {
+class HomeViewModel (application: Application, private val service: Service, private val context: CoroutineContext = Dispatchers.IO) : AndroidViewModel(application), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = context
 
+    private val repository: DefaultMealsRepository
     private val _randomRecipe = MutableLiveData<Result<Meals>>()
     private val randomRecipe: LiveData<Result<Meals>> = _randomRecipe
-    private val _topRecipesList = MutableLiveData<Result<Meals>>()
-    private val topRecipesList: LiveData<Result<Meals>> = _topRecipesList
     private val _searchResults = MutableLiveData<Result<List<Meal>>>()
     private val searchResults: LiveData<Result<List<Meal>>> = _searchResults
+    val topRecipes: LiveData<Result<Meals>>
+
+    init {
+        // Gets reference to mealDao from database to construct the correct repository
+        val mealDao = MealRoomDatabase(application).mealDao()
+        repository = DefaultMealsRepository(mealDao, service)
+        topRecipes = repository.topRecipes
+    }
 
     fun getRandomRecipe(): LiveData<Result<Meals>> {
         return randomRecipe
-    }
-
-    fun getRecipes(): LiveData<Result<Meals>> {
-        return topRecipesList
     }
 
     fun getSearchResults(): LiveData<Result<List<Meal>>> {
@@ -54,24 +60,17 @@ class HomeViewModel (private val service: Service,  private val context: Corouti
 
     fun retrieveTopRecipes() {
         launch {
-            _topRecipesList.postValue(Result.InProgress)
-            service.retrieveTopRecipes {result ->
-                when (result) {
-                    is Result.Success -> {
-                        _topRecipesList.postValue(result)
-                    }
-                    is Result.Failure -> {
-                        _topRecipesList.postValue(result)
-                    }
-                }
-
-            }
+            repository.retrieveTopMeals()
         }
     }
 
-    fun retrieveSearchResults(searchQuery: String) {
-        // TODO: Implement the logic to get the data
-       // _searchResults.value = SampleData.mealsList
-    }
+//    fun retrieveSearchResults(searchQuery: String) {
+//        // TODO: Implement the logic to get the data
+//       // _searchResults.value = SampleData.mealsList
+//    }
+
+//    private fun onDataNotAvailable() {
+//        _dataLoading.value = false
+//    }
 
 }

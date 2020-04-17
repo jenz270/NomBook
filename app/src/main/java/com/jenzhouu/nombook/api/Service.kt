@@ -31,7 +31,7 @@ class Service {
     fun retrieveRandomRecipe(callback: (result: Result<Meals>) -> Unit) {
         try {
             val response: Response<Meals> = api.randomRecipe().execute()
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 callback.invoke(Result.Success(response.body()))
             } else {
                 callback.invoke(Result.Failure(response.message()))
@@ -45,7 +45,7 @@ class Service {
     fun retrieveTopRecipes(callback: (result: Result<Meals>) -> Unit) {
         try {
             val response: Response<Meals> = api.topRecipes().execute()
-            if(response.isSuccessful) {
+            if (response.isSuccessful) {
                 callback.invoke(Result.Success(response.body()))
             } else {
                 callback.invoke(Result.Failure(response.message()))
