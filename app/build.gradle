@@ -6,6 +6,13 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: "kotlin-kapt"
 
+def loadKeystore() {
+    def keystorePropertiesFile = file('keystore.properties')
+    def keystoreProperties = new Properties()
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    keystoreProperties
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -16,7 +23,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("int", "API_KEY", API_KEY)
+        buildConfigField("int", "API_KEY", System.getenv("MEALSDB_API_KEY") ?: loadKeystore()["mealsdb.api_key"])
     }
     buildTypes {
         release {
