@@ -28,19 +28,21 @@ class IngredientsConverter {
     private val gson = Gson()
 
     @TypeConverter
-    fun toIngredient(data: String?): List<Ingredient> {
+    fun toIngredient(data: String?): List<Ingredient?> {
         if (data.isNullOrEmpty()) {
             return emptyList()
         }
+
         val listType = object : TypeToken<List<Ingredient>>() {}.type
         return gson.fromJson(data, listType)
     }
 
     @TypeConverter
-    fun fromIngredients(ingredient: List<Ingredient>?): String? {
-        if (ingredient == null || ingredient.isEmpty()) {
+    fun fromIngredients(ingredient: List<Ingredient?>?): String? {
+        if (ingredient.isNullOrEmpty()) {
             return ""
         }
+
         return gson.toJson(ingredient)
     }
 }

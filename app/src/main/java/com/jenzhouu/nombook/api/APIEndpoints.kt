@@ -19,5 +19,8 @@ interface APIEndpoints {
     fun topRecipes(): Call<Meals>
 
     @GET("filter")
-    fun searchRecipes(recipe: String): Call<List<Meal>>
+    fun searchRecipes(recipe: String): Call<Meals>
+
+    @GET("filter")
+    fun retrieveRecipe(id: String): Call<Meal>
 }

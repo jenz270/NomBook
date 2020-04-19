@@ -10,7 +10,6 @@ import kotlinx.android.parcel.Parcelize
 data class Ingredient(
     @PrimaryKey(autoGenerate = true)
     val ingredientId: Int = 0,
-    val mealFk: String,
     val name: String,
     val measure: String
 ) : Parcelable

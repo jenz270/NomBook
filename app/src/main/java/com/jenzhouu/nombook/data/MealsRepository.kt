@@ -11,6 +11,7 @@ interface MealsRepository {
     suspend fun addMeal(meal: Meal)
     suspend fun addFavoriteMeal(meal: Meal)
     suspend fun retrieveTopMeals()
-    suspend fun retrieveRandomMeals(): Result<Meals>
-    suspend fun findMeal(query: String): Result<Meals>
+    suspend fun insertTopRecipes(meals: Result<Meals>?)
+    suspend fun retrieveSearchMeals(searchQuery: String)
+    suspend fun retrieveRandomMeals()
 }

@@ -56,28 +56,31 @@ class Service {
         }
     }
 
-//    fun searchRecipes(recipe: String, callback: (result: Result<List<Meals>>) -> Unit) {
-//
-//        try {
-//            val response: Response<List<Meals>> = api.topRecipes().execute()
-//            if(response.isSuccessful) {
-//                callback.invoke(Result.Success(response.body()))
-//            } else {
-//                callback.invoke(Result.Error(response.message()))
-//            }
-//        } catch (e: IOException) {
-//            Log.e(TAG, "Meals Retrieval Failed", e)
-//            callback.invoke(Result.Error(e.message ?: ""))
-//        }
-//    }
-}
+    fun searchRecipes(recipe: String, callback: (result: Result<Meals>) -> Unit) {
+        try {
+            val response: Response<Meals> = api.searchRecipes(recipe).execute()
+            if (response.isSuccessful) {
+                callback.invoke(Result.Success(response.body()))
+            } else {
+                callback.invoke(Result.Failure(response.message()))
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Meals Retrieval Failed", e)
+            callback.invoke(Result.Failure(e.message ?: ""))
+        }
+    }
 
-fun main() {
-    val service = Service()
-//    service.retrieveRandomRecipe {
-//        println(it)
-//    }
-//    service.topRecipes {
-//        println(it)
-//    }
+    fun retrieveRecipe(id: String, callback: (result: Result<Meal>) -> Unit) {
+        try {
+            val response: Response<Meal> = api.retrieveRecipe(id).execute()
+            if (response.isSuccessful) {
+                callback.invoke(Result.Success(response.body()))
+            } else {
+                callback.invoke(Result.Failure(response.message()))
+            }
+        } catch (e: IOException) {
+            Log.e(TAG, "Meals Retrieval Failed", e)
+            callback.invoke(Result.Failure(e.message ?: ""))
+        }
+    }
 }

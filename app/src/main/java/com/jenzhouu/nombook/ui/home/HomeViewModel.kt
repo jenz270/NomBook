@@ -3,7 +3,6 @@ package com.jenzhouu.nombook.ui.home
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
 import com.jenzhouu.nombook.data.DefaultMealsRepository
@@ -20,41 +19,28 @@ class HomeViewModel (application: Application, private val service: Service, pri
         get() = context
 
     private val repository: DefaultMealsRepository
-    private val _randomRecipe = MutableLiveData<Result<Meals>>()
-    private val randomRecipe: LiveData<Result<Meals>> = _randomRecipe
-    private val _searchResults = MutableLiveData<Result<List<Meal>>>()
-    private val searchResults: LiveData<Result<List<Meal>>> = _searchResults
+    val randomRecipe: LiveData<Result<Meals>>
     val topRecipes: LiveData<Result<Meals>>
+    val searchRecipes: LiveData<Result<List<Meal>>>
 
     init {
         // Gets reference to mealDao from database to construct the correct repository
         val mealDao = MealRoomDatabase(application).mealDao()
         repository = DefaultMealsRepository(mealDao, service)
         topRecipes = repository.topRecipes
+        randomRecipe = repository.randomRecipe
+        searchRecipes = repository.searchResults
     }
 
-    fun getRandomRecipe(): LiveData<Result<Meals>> {
-        return randomRecipe
-    }
-
-    fun getSearchResults(): LiveData<Result<List<Meal>>> {
-        return searchResults
+    fun retrieveSearchedRecipes(query: String) {
+        launch {
+            repository.retrieveSearchMeals(query)
+        }
     }
 
     fun retrieveRandomRecipe() {
         launch {
-            _randomRecipe.postValue(Result.InProgress)
-            service.retrieveRandomRecipe {result ->
-                when (result) {
-                    is Result.Success -> {
-                        _randomRecipe.postValue(result)
-                    }
-                    is Result.Failure -> {
-                        _randomRecipe.postValue(result)
-                    }
-                }
-
-            }
+            repository.retrieveRandomMeals()
         }
     }
 
@@ -63,14 +49,4 @@ class HomeViewModel (application: Application, private val service: Service, pri
             repository.retrieveTopMeals()
         }
     }
-
-//    fun retrieveSearchResults(searchQuery: String) {
-//        // TODO: Implement the logic to get the data
-//       // _searchResults.value = SampleData.mealsList
-//    }
-
-//    private fun onDataNotAvailable() {
-//        _dataLoading.value = false
-//    }
-
 }

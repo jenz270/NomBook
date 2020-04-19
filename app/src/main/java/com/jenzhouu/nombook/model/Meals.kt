@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 import java.util.*
@@ -28,19 +29,19 @@ data class Meal(
     @SerializedName("strMealThumb")
     val image: String,
 
-    val ingredients: List<Ingredient> = listOf(),
+    val ingredients: List<Ingredient?>? = listOf(),
 
     val topRecipe: Boolean = false,
 
     var favoriteMeal: Boolean = false,
 
     @ColumnInfo(name = "last_fetched")
+    @Expose(deserialize = false)
     var created: Date = Date()
-
 ) : Parcelable
 
 @Parcelize
 data class Meals(
     @SerializedName("meals")
-    val mealsList: List<Meal>
+    val mealsList: List<Meal> = listOf()
 ) : Parcelable

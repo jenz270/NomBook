@@ -5,25 +5,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.jenzhouu.nombook.R
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
 import com.jenzhouu.nombook.databinding.FragmentHomeBinding
 import com.jenzhouu.nombook.ui.TopSpacingItemDecoration
+import com.jenzhouu.nombook.ui.ViewModelFactory
 
 const val TAG = "HomeFragment"
 
 class HomeFragment : Fragment() {
     private val viewModel: HomeViewModel by viewModels {
         val activity = requireNotNull(this.activity)
-        HomeViewModelFactory(activity.application, Service())
+        ViewModelFactory(activity.application, Service())
     }
 
     override fun onCreateView(
@@ -53,22 +56,18 @@ class HomeFragment : Fragment() {
         viewModel.retrieveTopRecipes()
         getTopRecipes(topRecipesAdapter, binding)
 
-//        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String?): Boolean {
-//                if (query != null) {
-//                    viewModel.retrieveSearchResults(query)
-//                    getSearchResults()
-//                }
-//                // TODO: pass in the data in the navigation route, remember to check for null data and return text on ui when null
-//                findNavController().navigate(R.id.action_navigation_home_to_navigation_search)
-//                return true
-//            }
-//
-//            override fun onQueryTextChange(newText: String?): Boolean {
-////                topRecipesAdapter.filter.filter(newText)
-//                return false
-//            }
-//        })
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    getSearchResults(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
 
         return binding.root
     }
@@ -76,14 +75,18 @@ class HomeFragment : Fragment() {
     /**
      * getSearchResults observes the search results recieved from the API
      */
-    private fun getSearchResults() {
-        viewModel.getSearchResults().observe(this, Observer { result ->
+    private fun getSearchResults(query: String) {
+        viewModel.retrieveSearchedRecipes(query)
+        viewModel.searchRecipes.observe(this, Observer { result ->
             when (result) {
                 is Result.InProgress -> {
                     Log.d(TAG, "search results are loading...")
                 }
                 is Result.Success -> {
                     Log.d(TAG, "Successfully retrieved search results.")
+                    // TODO: pass in the data in the navigation route, remember to check for null data and return text on ui when null
+                    val bundle = bundleOf("mealList" to result.data)
+                    findNavController().navigate(R.id.action_navigation_home_to_navigation_search, bundle)
                 }
                 is Result.Failure -> {
                     Log.d(TAG, "Results failed to be retrieved.")
@@ -125,7 +128,7 @@ class HomeFragment : Fragment() {
      * @param view View required to perform the fragment navigation
      */
     private fun getRandomRecipeResult(view: View) {
-        viewModel.getRandomRecipe().observe(viewLifecycleOwner, Observer { result ->
+        viewModel.randomRecipe.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Result.InProgress -> {
                     // TODO: Add in spinner for in progress

@@ -4,11 +4,11 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.jenzhouu.nombook.R
-import com.jenzhouu.nombook.databinding.TopRecipesListItemBinding
+import com.jenzhouu.nombook.databinding.RecipesListItemBinding
 import com.jenzhouu.nombook.model.Meal
 import com.squareup.picasso.Picasso
 
-class RecipeViewHolder(private val binding: TopRecipesListItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class RecipeViewHolder(private val binding: RecipesListItemBinding) : RecyclerView.ViewHolder(binding.root) {
     fun bind(meal: Meal) {
         with(binding) {
             recipeTitle.text = meal.name

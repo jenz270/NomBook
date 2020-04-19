@@ -1,14 +1,16 @@
 package com.jenzhouu.nombook.data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jenzhouu.nombook.api.Result
 import com.jenzhouu.nombook.api.Service
 import com.jenzhouu.nombook.model.Meal
 import com.jenzhouu.nombook.model.Meals
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.util.*
-
 
 class DefaultMealsRepository(
     private val mealDao: MealDao,
@@ -17,15 +19,18 @@ class DefaultMealsRepository(
 ) : MealsRepository {
     companion object {
         private const val TIMEOUT_IN_DAYS = 1
+        private const val TAG = "DefaultMealsRepository"
     }
 
     private val _topRecipes = MutableLiveData<Result<Meals>>()
     val topRecipes: LiveData<Result<Meals>> = _topRecipes
+    private val _randomRecipe = MutableLiveData<Result<Meals>>()
+    val randomRecipe: LiveData<Result<Meals>> = _randomRecipe
+    private val _searchResults = MutableLiveData<Result<List<Meal>>>()
+    val searchResults: LiveData<Result<List<Meal>>> = _searchResults
 
     override suspend fun addMeal(meal: Meal) {
-        GlobalScope.launch {
-            mealDao.insertMeal(meal)
-        }
+        mealDao.insertMeal(meal)
     }
 
     override suspend fun addFavoriteMeal(meal: Meal) {
@@ -35,19 +40,18 @@ class DefaultMealsRepository(
 
     override suspend fun retrieveTopMeals() {
         // if the database is empty, just retrieve, else we will need to check.
-        // check if the top meals had already been retrieved
+        // if time is less than 24 hours, we will not retrieve from api, but from database.
         val lastRetrievalTime: Date? = if (mealDao.getTimeTopMeal().isNullOrEmpty()) {
             Date(0)
         } else {
             mealDao.getTimeTopMeal()?.get(0)
         }
         val mealList = mealDao.getTopRecipes()
-
         val checked = shouldRefreshData(lastRetrievalTime)
-
         if (checked || mealList.isEmpty()) {
             mealDao.deleteTopRecipes()
             retrieveTopMealsFromApi()
+            insertTopRecipes(topRecipes.value)
         } else {
             val mealsItem = Meals(mealList)
             _topRecipes.postValue(Result.InProgress)
@@ -59,12 +63,36 @@ class DefaultMealsRepository(
         }
     }
 
-    override suspend fun retrieveRandomMeals(): Result<Meals> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun retrieveSearchMeals(query: String) {
+        withContext(dispatcher) {
+            _searchResults.postValue(Result.InProgress)
+            service.searchRecipes(query) { result ->
+                when (result) {
+                    is Result.Success -> {
+                        retrieveListOfRecipes(result.data)
+                    }
+                    is Result.Failure -> {
+                        _searchResults.postValue(result)
+                    }
+                }
+            }
+        }
     }
 
-    override suspend fun findMeal(query: String): Result<Meals> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun retrieveRandomMeals() {
+        withContext(dispatcher) {
+            _randomRecipe.postValue(Result.InProgress)
+            service.retrieveRandomRecipe { result ->
+                when (result) {
+                    is Result.Success -> {
+                        _randomRecipe.postValue(result)
+                    }
+                    is Result.Failure -> {
+                        _randomRecipe.postValue(result)
+                    }
+                }
+            }
+        }
     }
 
     private suspend fun retrieveTopMealsFromApi() {
@@ -74,16 +102,27 @@ class DefaultMealsRepository(
                 when (result) {
                     is Result.Success -> {
                         _topRecipes.postValue(result)
-                        GlobalScope.launch {
-                            if (result.data?.mealsList != null) {
-                                val resultData = setTopRecipesTrue(result.data.mealsList)
-                                mealDao.insertAll(resultData)
-                            }
-                        }
                     }
                     is Result.Failure -> {
                         _topRecipes.postValue(result)
                     }
+                }
+            }
+        }
+    }
+
+    override suspend fun insertTopRecipes(meals: Result<Meals>?) {
+        if (meals != null) {
+            when (meals) {
+                is Result.Success -> {
+                    val resultData = setTopRecipesTrue(meals.data?.mealsList)
+                    mealDao.insertAll(resultData)
+                }
+                is Result.Failure -> {
+                    Log.e(
+                        TAG,
+                        "Insert top recipes to database is not possible as data is not correct."
+                    )
                 }
             }
         }
@@ -100,7 +139,31 @@ class DefaultMealsRepository(
         return false
     }
 
-    private fun setTopRecipesTrue(mealList: List<Meal>): List<Meal> {
+    private fun setTopRecipesTrue(mealList: List<Meal>?): List<Meal> {
+        if (mealList == null) {
+            return listOf()
+        }
         return mealList.map { it.copy(topRecipe = true) }
+    }
+
+    private fun retrieveListOfRecipes(result: Meals?) {
+        val mealList = result?.mealsList
+        val resultList = mutableListOf<Meal>()
+
+        mealList?.map {
+            service.retrieveRecipe(it.recipeId) { result ->
+                when (result) {
+                    is Result.Success -> {
+                        if (result.data != null) {
+                            resultList.add(result.data)
+                        }
+                    }
+                    is Result.Failure -> {
+                        Log.e(TAG, "Failed to retrieve recipe with id: ${it.recipeId}")
+                    }
+                }
+            }
+        }
+        _searchResults.value = Result.Success(resultList)
     }
 }

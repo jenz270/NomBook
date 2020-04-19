@@ -15,7 +15,6 @@ import com.jenzhouu.nombook.utils.InstructionsFormatter
 import com.squareup.picasso.Picasso
 
 class RecipeDetailsFragment : Fragment() {
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +25,6 @@ class RecipeDetailsFragment : Fragment() {
 
         val bundle = arguments
         var recipe: Meal? = null
-
         if (bundle != null) {
             recipe = bundle.getParcelable("recipe")
         }
@@ -37,20 +35,15 @@ class RecipeDetailsFragment : Fragment() {
 
         if (recipe != null) {
             binding.recipeNameText.text = recipe.name
-
             Picasso.get()
                 .load(recipe.image)
                 .placeholder(R.drawable.ic_launcher_background)
                 .error(R.drawable.ic_launcher_background)
                 .into(binding.recipeImage)
-
             var ingredientsText = ""
-            if (!recipe.ingredients.isNullOrEmpty()) {
-                recipe.ingredients.forEach {
-                    ingredientsText += it.measure + " " + it.name + "\n"
-                }
+            recipe.ingredients?.forEach {
+                ingredientsText += it?.measure + " " + it?.name + "\n"
             }
-
             binding.ingredientsList.text = ingredientsText
 
             val instructions = InstructionsFormatter.format(recipe.instructions)

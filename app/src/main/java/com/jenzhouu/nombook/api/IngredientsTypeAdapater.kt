@@ -19,18 +19,21 @@ class MealDeserializer : JsonDeserializer<Meal> {
         // We only need to custom parse the parseIngredients, so we initially let
         // Gson parse everything else. Ingredients will be null at this point.
         val meal = gson.fromJson<Meal>(json, Meal::class.java)
-        try {
-            return meal.copy(
+        val newMeal = try {
+            meal.copy(
                 ingredients = parseIngredients(json)
             )
         } catch (t: Throwable) {
             println(t)
+            meal.copy(
+                ingredients = listOf()
+            )
         }
 
-        return meal
+        return newMeal
     }
 
-    private fun parseIngredients(json: JsonElement): List<Ingredient> {
+    private fun parseIngredients(json: JsonElement): List<Ingredient?> {
         val jsonObject = json.asJsonObject
         return (1..20).map {
             check(!jsonObject.isJsonNull) { "JSON response from themealdb API was null!" }
@@ -39,13 +42,11 @@ class MealDeserializer : JsonDeserializer<Meal> {
             val measure = jsonObject.get("strMeasure$it")
             if (!ingredient.isJsonNull && !measure.isJsonNull) {
                 Ingredient(
-                    mealFk = mealId.asString,
                     name = ingredient.asString,
                     measure = measure.asString
                 )
             } else {
                 Ingredient(
-                    mealFk = mealId.asString,
                     name = "",
                     measure = ""
                 )
